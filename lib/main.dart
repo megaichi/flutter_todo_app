@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/Main_model.dart';
 import 'package:provider/provider.dart'; 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:todo_app/add/add_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +15,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Todoアプリ',
-      home: ChangeNotifierProvider<MainModel>(
+      home: MainPage(),
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<MainModel>(
         create: (_) => MainModel()..getTodoListRealtime(),
         child: Scaffold(
           appBar: AppBar(
@@ -23,18 +32,35 @@ class MyApp extends StatelessWidget {
             body: Consumer<MainModel>(builder: (context, model, child){
               final todoList = model.todoList;
               return ListView(
-                children: 
-                todoList.map((todo) =>
-                ListTile(title: Text(todo.title),),).toList(),
-                );
+                children: todoList
+                    .map(
+                      (todo) => ListTile(
+                        title: Text(todo.title),
+                        ),
+                        )
+                      .toList(),
+              );
             }),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {} ,
-              tooltip: 'Increment',
-              child: Icon(Icons.add),
-          ),
-        ),
+            floatingActionButton: 
+                  Consumer<MainModel>(builder: (context, model, child){
+              return FloatingActionButton(
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddPage(model),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+            child: Icon(Icons.add),
+          );
+        },
       ),
+    ),
     );
   }
+
+
+
 }
