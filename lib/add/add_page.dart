@@ -29,7 +29,7 @@ class AddPage extends StatelessWidget {
                         model.newTodoText = text;
                       },
                     ),
-                    SizedBox(
+                    SizedBox( 
                       height: 16,
                     ),
                     RaisedButton(
